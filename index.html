@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Копирование текста</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #fff;
+      color: #111;
+      font-family: Arial, sans-serif;
+    }
+    main {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 16px;
+      font-size: 24px;
+    }
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 260px;
+      padding: 14px;
+      border: 1px solid #999;
+      border-radius: 6px;
+      background: #fff;
+      color: #111;
+      font: 17px/1.6 Arial, "Noto Sans JP", sans-serif;
+      resize: vertical;
+    }
+    button {
+      width: 100%;
+      min-height: 52px;
+      margin-top: 12px;
+      border: 0;
+      border-radius: 6px;
+      background: #111;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:active { background: #333; }
+    button:focus-visible,
+    textarea:focus-visible {
+      outline: 3px solid #5b9dd9;
+      outline-offset: 2px;
+    }
+    #status {
+      min-height: 24px;
+      margin: 10px 0 0;
+      color: #16703a;
+      font-size: 15px;
+      text-align: center;
+    }
+    @media (max-width: 480px) {
+      body { padding: 16px; }
+      h1 { font-size: 21px; }
+      textarea { min-height: 360px; font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Текст для копирования</h1>
+    <textarea id="text" readonly aria-label="Текст для копирования">#TVアニメ 『ONE PIECE』 エルバフ編 最新情報を発表&amp;最新PV公開 オープニング主題歌&amp;エンディング主題歌、さらにエルバフ編の重要キャラクター 「ロキ」のキャストが決定しました!! ◆オープニング主題歌:</textarea>
+    <button id="copy" type="button">Скопировать текст</button>
+    <p id="status" role="status" aria-live="polite"></p>
+  </main>
+
+  <script>
+    const text = document.getElementById('text');
+    const button = document.getElementById('copy');
+    const status = document.getElementById('status');
+
+    async function copyText() {
+      try {
+        await navigator.clipboard.writeText(text.value);
+      } catch (error) {
+        text.removeAttribute('readonly');
+        text.select();
+        text.setSelectionRange(0, text.value.length);
+        document.execCommand('copy');
+        text.setAttribute('readonly', '');
+        window.getSelection()?.removeAllRanges();
+      }
+
+      button.textContent = 'Скопировано!';
+      status.textContent = 'Текст скопирован в буфер обмена.';
+
+      window.setTimeout(() => {
+        button.textContent = 'Скопировать текст';
+        status.textContent = '';
+      }, 2000);
+    }
+
+    button.addEventListener('click', copyText);
+    text.addEventListener('click', () => text.select());
+  </script>
+</body>
+</html>
